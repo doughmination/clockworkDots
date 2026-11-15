@@ -17,17 +17,10 @@ A theme based off of Sandrone "Marionette" Guillotin from Genshin Impact
 
 ## Install
 
-### Self-hosted
-This code is sourced off this repo, and hosted on Cloudflare Pages. You can check the actions indicator, and it will show the latest build.
-```sh
-curl -fsSL https://dots.doughmination.gay/install | bash
-```
-
-### Manual installation
 ```sh
 git clone https://github.com/doughmination/dots
 cd dots
-bash install --local
+./install
 ```
 
 The installer runs five scripts, and you can run any of them on its own:

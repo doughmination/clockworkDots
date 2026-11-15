@@ -1,38 +1,14 @@
 #!/usr/bin/env bash
-# install: full setup.
+# install: full setup, run from inside a clone.
 #
-#   curl -fsSL https://dots.doughmination.gay/install | bash
-#   curl -fsSL https://dots.doughmination.gay/install | bash -s -- --dry-run
-#   ./install --local   use this clone instead of downloading
+#   git clone https://github.com/doughmination/dots && cd dots && ./install
+#   ./install --dry-run
 
 set -uo pipefail
 
-SITE=${DOTS_SITE:-https://dots.doughmination.gay}
-
-# download <dest dir>: fetch the tarball pieces build-site.sh made, check the
-# joined tarball against its checksum, and unpack it into <dest dir>
-download() {
-  local dest=$1
-  local parts
-  local part
-
-  parts=$(curl -fsSL "$SITE/dots.parts") || return 1
-  curl -fsSL -o "$dest/dots.tar.gz.sha256" "$SITE/dots.tar.gz.sha256" || return 1
-
-  for part in $parts; do
-    echo "  $part"
-    curl -fsSL "$SITE/$part" >>"$dest/dots.tar.gz" || return 1
-  done
-
-  (cd "$dest" && sha256sum --quiet -c dots.tar.gz.sha256) || return 1
-
-  mkdir "$dest/repo"
-  tar -xzf "$dest/dots.tar.gz" -C "$dest/repo"
-}
-
 usage() {
   cat <<'EOF'
-install: full setup. Downloads the latest dots, then runs, in order:
+install: full setup from this clone. Runs, in order:
   1. install-deps.sh    software (packages, rust + hyfetch, oh-my-posh, flatpaks, services)
   2. install-git.sh     git name, email and default branch
   3. install-assets.sh  font and cursor themes
@@ -40,10 +16,9 @@ install: full setup. Downloads the latest dots, then runs, in order:
   5. install-scripts.sh copy binaries/ into ~/.local/bin
   6. install-sddm.sh    the Clockwork login screen
 
-  curl -fsSL https://dots.doughmination.gay/install | bash
-  curl -fsSL https://dots.doughmination.gay/install | bash -s -- --dry-run
+  ./install
+  ./install --dry-run
 
-  --local                       use the clone this script is in, don't download
   --dry-run                     print every command without running anything
   --no-flatpak, --no-services   passed through to install-deps.sh
   --git-name=, --git-email=, --git-branch=, --defaults
@@ -63,14 +38,11 @@ banner() {
   printf '\n'
   printf '  %sClockwork Dots%s - A theme inspired by Sandrone\n' "$glow" "$off"
   printf '  %sby Clove Twilight (doughmination)%s\n' "$gold" "$off"
-  printf '  %s%s%s\n' "$muted" "$SITE" "$off"
+  printf '  %s%s%s\n' "$muted" "https://github.com/doughmination/dots" "$off"
   printf '\n'
 }
 
-# Wrapped in a function so bash reads the whole script before running any of
-# it, which matters when it's piped in from curl
 main() {
-  local LOCAL=0
   local ALL=()
   local DEPS=()
   local GIT=()
@@ -85,7 +57,6 @@ main() {
 
   for arg in "$@"; do
     case $arg in
-      --local)                    LOCAL=1 ;;
       --dry-run)                  ALL+=("$arg") ;;
       --no-flatpak|--no-services) DEPS+=("$arg") ;;
       --git-*=*|--defaults)       GIT+=("$arg") ;;
@@ -96,30 +67,14 @@ main() {
 
   banner
 
-  if [ "$LOCAL" = 1 ]; then
-    REPO=$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" && pwd)
-    if [ ! -f "$REPO/install-config.sh" ]; then
-      echo "--local needs to run from inside a clone of the dots."
-      exit 1
-    fi
-  else
-    for tool in curl tar sha256sum; do
-      command -v "$tool" >/dev/null || { echo "Needs $tool to download the dots."; exit 1; }
-    done
-
-    TMP=$(mktemp -d)
-    trap 'rm -rf "$TMP"' EXIT
-
-    printf '\e[1;35mDownloading the dots from %s\e[0m\n' "$SITE"
-    if ! download "$TMP"; then
-      echo "Download failed. Check your connection, or clone the repo and use --local."
-      exit 1
-    fi
-    REPO=$TMP/repo
+  REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+  if [ ! -f "$REPO/install-config.sh" ]; then
+    echo "Run this from inside a clone of the dots."
+    exit 1
   fi
 
-  # Prompts (git name, sudo, package managers) read the terminal, not the
-  # pipe from curl. No terminal at all means no prompts.
+  # Prompts (git name, sudo, package managers) read the terminal.
+  # No terminal at all means no prompts.
   local input=/dev/null
   if { : </dev/tty; } 2>/dev/null; then
     input=/dev/tty

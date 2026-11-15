@@ -25,9 +25,6 @@
 !/swaylock/
 !/waybar/
 !/xsettingsd/
-!/index.html
-!/site.css
-!/build-site.sh
 
 *.bak*
 *.swp
