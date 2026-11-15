@@ -18,8 +18,8 @@ A theme based off of Sandrone "Marionette" Guillotin from Genshin Impact
 ## Install
 
 ```sh
-git clone https://github.com/doughmination/clockwork-dots
-cd clockwork-dots
+git clone https://github.com/doughmination/clockworkDots
+cd clockworkDots
 ./install
 ```
 
