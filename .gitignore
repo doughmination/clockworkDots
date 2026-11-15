@@ -4,6 +4,7 @@
 !/.gitignore
 !/.github/
 !/README.md
+!/LICENSE
 !/screenshot.png
 !/install*
 !/bashrc
