@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # install: full setup, run from inside a clone.
 #
-#   git clone https://github.com/doughmination/dots && cd dots && ./install
+#   git clone https://github.com/doughmination/clockwork-dots && cd clockwork-dots && ./install
 #   ./install --dry-run
 
 set -uo pipefail
@@ -38,7 +38,7 @@ banner() {
   printf '\n'
   printf '  %sClockwork Dots%s - A theme inspired by Sandrone\n' "$glow" "$off"
   printf '  %sby Clove Twilight (doughmination)%s\n' "$gold" "$off"
-  printf '  %s%s%s\n' "$muted" "https://github.com/doughmination/dots" "$off"
+  printf '  %s%s%s\n' "$muted" "https://github.com/doughmination/clockwork-dots" "$off"
   printf '\n'
 }
 
