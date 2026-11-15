@@ -42,7 +42,3 @@ The installer runs five scripts, and you can run any of them on its own:
 - [ ] Ubuntu
 - [ ] Fedora
 - [ ] NixOS
-
-## Credits
-
-The wallpaper isn't mine; I found it online. Everything else, including the cursor, is mine.
