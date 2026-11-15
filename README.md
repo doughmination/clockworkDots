@@ -1,6 +1,6 @@
-# Dots
+# Clockwork Dots
 
-A theme based off of Sandrone from Genshin Impact
+A theme based off of Sandrone "Marionette" Guillotin from Genshin Impact
 
 ## Preview
 ![](./screenshot.png)
